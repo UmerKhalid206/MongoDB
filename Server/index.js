@@ -29,7 +29,7 @@ const getDatabases = async() => {
     try {
         await connectToDatabase()
         const databaseList = await client.db('sample_analytics').admin().listDatabases()
-        databaseList.databases.forEach(db => console.log(` - ${db.name}`))
+        // databaseList.databases.forEach(db => console.log(` - ${db.name}`))
         
     } catch (error) {
         console.error(error);
@@ -154,4 +154,48 @@ Note: if sample_analytics does not exist then mongoDB would create a database na
 
 
 //...........................................................................
+/*
+ find method in mongoDB
+ */
+// const users = client.db('sample_analytics').collection('users').find()  //it would return all documents from database
+// users.toArray().then((arr) => console.log(arr))
 
+/*Note: you have to convert response into array because The find() method in 
+MongoDB returns a cursor, not the actual documents
+*/
+
+//..........................................................................
+
+/*if we want to find a specific document then
+1- {field: {$eq: <value>}}   or
+2- {field: <value>}    //it is implicit syntax of eq to shorten the length of query
+*/
+
+//example of finding single document
+
+// const users = client.db('sample_analytics').collection('users')
+// .find({age: 23}).toArray().then((arr) => console.log(arr))
+
+
+//.......................................................................
+
+/* using $in operator inside find
+The $in operator allows us to select all documents that have a field value equal to
+any of the values specified in the array
+
+syntax:
+
+db.<collection>.find({
+<field>: {$in:
+[<value>, <value2>, .....]
+}
+})
+
+*/
+
+//exmaple using $in operator
+
+client.db('sample_analytics').collection('users')
+.find({class_id: {$in: [550, 551]}}).toArray().then((arr) => console.log(arr))  
+/*it means find those documents whose class_id is 550 or 551 
+*/
