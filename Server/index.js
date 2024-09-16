@@ -195,7 +195,97 @@ db.<collection>.find({
 
 //exmaple using $in operator
 
-client.db('sample_analytics').collection('users')
-.find({class_id: {$in: [550, 551]}}).toArray().then((arr) => console.log(arr))  
+// client.db('sample_analytics').collection('users')
+// .find({class_id: {$in: [550, 551]}}).toArray().then((arr) => console.log(arr))  
 /*it means find those documents whose class_id is 550 or 551 
 */
+
+
+//...............................................................
+
+//Comparison operators in MOngoDB
+/*
+
+$gt => greater than
+$gte => greater than or equal to
+$lt => less than
+$lte => less than or equal to
+// https://www.mongodb.com/docs/manual/reference/operator/query-comparison/
+visit this link to know more operators supported by mongoDB
+
+syntax => <field> : {<operator> : <value>}
+*/
+
+//this query may take some time because it has to go through a large dataset
+// client.db('sample_supplies').collection('sales').find({"items.price": {$gt: 1000}}).toArray()
+// .then((arr)=> console.log(arr))
+
+//................................................................................
+
+// $lte 
+
+/*As we know dataset was huge so i limit it to only 100 documents so it would
+only return first 100 documents that would fulfil the condition of $gte: 20*/
+
+// client.db('sample_supplies').collection('sales')
+// .find({"customer.age": {$gte: 20}}).skip(0).limit(100).toArray()  //The .limit(100) ensures that no more than 100 documents are returned.
+// .then((arr)=> console.log(arr))
+
+//............................................................................
+
+//query array in documents
+
+// client.db('sample_analytics').collection('accounts')
+// .find({"products": "InvestmentStock"}).limit(50).toArray()
+// .then((arr)=> console.log(arr))
+
+/*
+in above example find({"products": "InvestmentStock"}) would search for products
+that have "InvestmentStock" in products array or even if products is not an array
+means products holds only a singular/ scalar value
+
+but we want that search for "InvestmentStock" value but it must be inside an array
+of products not a singular value means element of an array then use
+
+$elemMatch
+
+client.db('sample_analytics').collection('accounts')
+.find({
+    products: {
+        $elemMatch: {$eq: "InvestmentStock"}
+    }
+})
+
+*/
+
+//Example of elemMatch
+// client.db('sample_analytics').collection('accounts')
+// .find({products: {
+//     $elemMatch: {$eq: "InvestmentStock"}
+// }})
+// .limit(50).toArray()
+// .then((arr)=> console.log(arr))
+
+
+//.....................................................................
+
+/*
+you can also use elemMatch for multiple array values
+*/
+
+// client.db('sample_supplies').collection('sales')
+// .find({items: {    /*find those documents which have items field and then it would 
+//     be any array and that array should contain a document with name=> "laptop" and 
+//     it should have price greater than 800 plus its quantity should be greater or 
+//     equal to one (means match all three conditions) and that query would return all
+//     those documents who have an items array that contains further document with 
+//     condition => {name: "laptop", price: {$gt: 800}, quantity: {$gte: 1}}*/
+//     $elemMatch: {name: "laptop", price: {$gt: 800}, quantity: {$gte: 1}}
+// }})
+// .limit(2).toArray()
+// .then((arr)=> console.log(JSON.stringify(arr,null, 2)))   //more readable form
+
+//............................................................................
+
+
+
