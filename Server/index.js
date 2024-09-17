@@ -1,4 +1,4 @@
-const {MongoClient} = require('mongodb')
+const {MongoClient, ObjectId} = require('mongodb')
 const uri = require('./atlas-uri')
 
 
@@ -374,3 +374,105 @@ you need to use the explicit $and operator
 
 
 
+//...............................................................
+
+// replaceOne() method
+/* syntax => db.collection.replaceOne(filter,replacementDocument,optionsObject)
+optionsObject is optional */
+
+// Example
+
+// client.db('sample_analyt').collection('users')
+// .replaceOne({_id: new ObjectId('66e6b7734391ebf1d5497280')}, {  //would create a new instance of ObjectId class and assign that object value to _id
+//     name: 'Umer Khalid jutt',
+//     email: 'umer@gmail.com'
+
+// }
+// ).then((res) => console.log(res))
+
+//.....................................................................
+
+//findOne method to check after replaceOne that whether data changed or not
+
+// client.db('sample_analyt').collection('users')
+// .findOne({_id: new ObjectId('66e6b7734391ebf1d5497280')}, { projection: { name: 1, email: 1, _id: 0 } })
+// .then((res) => console.log(res))
+
+//..................................................................
+
+//UpdateOne() method
+
+/*
+Syntax: 
+    db.collection.updateOne(
+    <filter document>,
+    <update document>,
+    {options object}    //optional
+    )
+
+    updateOne method also have operators
+    $set 
+    $push
+
+    1- $set operator: 
+        $set operator does one of two things
+        - Add new fields and values to a document   (OR)
+        - Replaces the value of a field with a specified value
+
+    2- upsert Option:
+        Insert a document with provided information if matching documents
+        don't exist, upsert is shortcut for update and insert    
+
+    3- $push operator:
+       $push operator does one of two things
+       - Appends a value to an array   (OR) 
+       - if the field is absent $push adds the array field with the value as its
+       element
+*/      
+
+// $set operator Example
+
+// client.db('sample_analyt').collection('users')
+// .updateOne({_id: new ObjectId('66e6b7734391ebf1d5497280')}, 
+//     {$set : {city: 'Samundri'}}  //set would add a new field and value to document
+// ).then((res) => console.log(res))
+
+//.....................................................
+// upsert option in updateOne
+
+/* what if updateOne could not find a document and we have a scenario that if 
+document _id is matched then update that document with provided fields and their 
+values but if filter does not find any document on the condition provided in first
+argument of updateOne and we can also insert a new document with the fields provided
+in updateOne
+*/
+
+//Example of upsert
+
+// client.db('sample_analyt').collection('users')
+// .updateOne({name: 'Saqib Mahmood'},    //check if a document containing name: 'Saqib Mahmood' exist
+//     {$set: {email: 'saqib@gmail.com'}},  //if found set its email with value 'saqib@gmail.com'
+//     {upsert: true} //if not found then create a new document with given name + email
+// ).then((res) => console.log(res))
+
+//...............................................................
+
+// $push operator 
+/*suppose we have a document that contains an array and we want to add, value in
+that array or even if array is empty push a value to it*/
+
+// client.db('sample_analyt').collection('users')
+// .updateOne({email: 'saqib@gmail.com'},   //find document with field + value
+//     {$push: {address: 'Saudia'}}   //if address field not available create a new array and add address: 'Saudia' to it, otherwise  => push address:'saudia' if address array exists
+// ).then((res) => console.log(res))
+
+
+//.......................................................
+
+// $pull operator is used to delete value from array even if present in center
+// client.db('sample_analyt').collection('users')
+// .updateOne({email: 'saqib@gmail.com'},  
+//     {$pull: {address: 'Faisalabad'}}   //it would remove 'Faislabad' from address array even if it is in center 
+// ).then((res) => console.log(res))
+
+//$pop operator is used to delete value from array from start or end of array
