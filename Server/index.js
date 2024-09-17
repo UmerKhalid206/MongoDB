@@ -476,3 +476,77 @@ that array or even if array is empty push a value to it*/
 // ).then((res) => console.log(res))
 
 //$pop operator is used to delete value from array from start or end of array
+
+
+//.........................................................................
+
+// findAndModify() method  deprecated
+/*
+findAndModify() method returns the document that has just been updated
+Explanation: 
+Suppose we have app that keeps track of how many users downlaod an app and
+when a user downloads that app we have to update that field in database so we used 
+updateOne() which would return only the modified count related information and then 
+we want to show the updated downloads count, and for that count we would call findOne
+method to check the new count after recent update, 
+in that scenario we have two drawbacks
+1- calling updateOne and then findOne() means 2 roundtrips to mongoDB server
+2- may be another user downloads that app and count is again updated before the 
+   findOne method's round trip to mongoDB server that means first user would find
+   wrong information
+
+to avoid those two problems we have findAndModify() method because it would update
+the document and also return changed document as whole, without return the modified
+count
+*/
+
+
+/*Example: we would have a scenario how many profile visits are their on a users
+profile*/
+
+// client.db('sample_analyt').collection('users')
+// .findOneAndUpdate(
+//     {_id: new ObjectId('66e6b7734391ebf1d5497280')},
+//     { $inc: { profileView: 1 } },  // Increment 'profileView' by 1 (creates it if not exists)
+//     {returnDocument: 'after', upsert: true}  // Return updated document, create if not found
+//     //returnDocument: 'after' would return the document after it is updated
+// ).then((res)=> console.log(res))
+
+/*in above example if profileView found already inc by 1, if not found create 
+profileView and assign 1 to it, it would only do so if upsert is set to true */
+
+
+//.......................................................
+
+/*updateMany() method
+  it is used to update multiple documents in a single mongoDB collection
+  updateMany() method accepts
+  - filter document
+  - update document
+  - Options object
+ */
+
+//Example
+//if users age >= 23 or class_id:550 then set a field graduated: true or [update field if exist]
+
+// client.db('sample_analytics').collection('users')
+// .updateMany(
+//     {$or: [{age: {$gte: 23}}, {class_id: 550}]},  //if age > 23 or class_id:550 select them
+//     {$set: {"graduated": true}},   //if selected then set their graduated field to true
+// ).then((res) => console.log(res))
+
+//drawbacks or points to remember about updateMany
+/*
+- updateMany() method is Not an all-or-nothing operation which means
+  of you give command to update documents, and total matched documents were 1000
+  in the mean time updateMany operation stops after changing only 200/1000 documents
+  then it will not roll back updates that means only 200 would be updated and rest 
+  800 are still pending, and at that point 200 are different from rest 800, then
+  you have to run again updateMany
+  
+- updateMany also lacks isolation, which means that updates will be visible as soon
+  as they are performed,
+  
+for those reasons updateMany is not appropriate for some use cases that may be 
+essential for business requirements, such as financial transactions 
+*/
