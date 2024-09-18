@@ -584,3 +584,63 @@ from them*/
 // client.db('sample_analytics').collection('users')
 // .deleteMany({"graduated": false})
 // .then((res)=> console.log(res))
+
+
+//...........................................................
+
+// Modifiying query results
+/* 
+- Return the result of a query in a specified order
+- Limit the number of documents in a result
+
+to achieve above two things we would use two cursor methods
+- cursor.sort()
+- cursor.limit()
+
+=> Cursor:
+    A cursor is a pointer to the result set of a query, 
+    the db.collection.find() method returns a cursor and points to the documents
+    that match that query
+
+    Cursor methods which are chained to queries can then be used to perform actions
+    on the resulting set, e.g; sorting and limiting the number of search results
+    before returning the desired data or information to the client
+*/
+
+//sort method
+/*
+suppose we want to sort music companies according to their name in ascending order
+
+*/
+// client.db('sample_training').collection('companies')
+// .find(
+//     {'category_code': 'music'}, 
+//     {projection: {name: 1}} //projection would only show name field of found document
+// ).sort({name: 1})  /*if name: 1 => ascending (OR) name:-1 => descending order also
+//     sort would sort capital Alphabet first and then lowercase alphabet, but you can 
+//     change this behaviour in sort methods options
+// */
+// .toArray().then((res)=> console.log(res))
+
+//......................................................................
+
+//limit method:
+/*
+limiting the number of results can enhance performance of an app by avoiding 
+unnecessary data processing 
+*/
+
+/*
+Suppose we want to find top 3 music companies with highest number of employees
+
+*/
+
+// client.db('sample_training').collection('companies')
+// .find(
+//     {"category_code": "music"},
+//     {projection: {name: 1, number_of_employees: 1}}
+// ).sort({number_of_employees: -1})    //descending_sort to have company with highest number_of_employees at top
+// .limit(3)
+// .toArray().then((res)=> console.log(res))
+
+//...................................................
