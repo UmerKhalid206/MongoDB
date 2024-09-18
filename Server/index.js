@@ -560,3 +560,27 @@ essential for business requirements, such as financial transactions
 // ).then((res)=> console.log(res))
 
 //............................................................
+
+// deleteOne()
+
+//inserted a new document to make duplicate of Umer named document then delete it
+// client.db('sample_analytics').collection('users')
+// .insertOne({name: 'Umer', age: 23, graduated: true})
+// .then((res)=> console.log(res))
+
+// client.db('sample_analytics').collection('users')
+// .find({name: 'Umer'}).toArray().then((res)=> console.log(res))
+/* if document with name 'Umer' is more than one means duplicate then delete one
+from them*/
+
+// client.db('sample_analytics').collection('users')
+// .deleteOne({_id: new ObjectId('66e6a8cf171bd1bff58ef1f1')})
+// .then((res)=> console.log(res))
+
+//...............................................................
+
+//deleteMany()
+
+// client.db('sample_analytics').collection('users')
+// .deleteMany({"graduated": false})
+// .then((res)=> console.log(res))
