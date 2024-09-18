@@ -550,3 +550,13 @@ profileView and assign 1 to it, it would only do so if upsert is set to true */
 for those reasons updateMany is not appropriate for some use cases that may be 
 essential for business requirements, such as financial transactions 
 */
+
+
+//to update documents who have same field but different values
+// client.db('sample_analyt').collection('users')
+// .updateMany(
+//     {"name": {$in: ["Umer Khalid jutt", "Saqib Mahmood"]}},  
+//     {$set: {"last_met": new Date('2024-06-30')}}
+// ).then((res)=> console.log(res))
+
+//............................................................
