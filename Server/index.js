@@ -644,3 +644,68 @@ Suppose we want to find top 3 music companies with highest number of employees
 // .toArray().then((res)=> console.log(res))
 
 //...................................................
+
+/*=> projection:
+ it is used to return specific fields from whole document, mostly used in find
+ methods of mongoDB
+ by projection if you eliminate some fields than it would be a less burden on your 
+ bandwidth 
+*/
+
+
+
+// client.db('sample_training').collection('inspections')
+// .find(
+//     {sector: "Mobile Food Vendor - 881"},
+//     {projection: {business_name: 1, result: 1, _id: 0}}  //only show business_name + result in return
+// ).toArray().then((res) => console.log(res))
+
+/*
+Note: 
+    In projection inclusion and exlusion can't be combined in projections 
+    except _id field
+*/
+
+
+//.....................................................
+
+//Another example
+//we want to have documents whose result is either pass or a warning
+
+// client.db('sample_training').collection('inspections')
+// .find(
+//     {result: {$in: ["Pass", "Warning"]}},
+//     {projection: {date: 0, "address.zip": 0}}
+    
+// ).limit(50).toArray().then((res) => console.log(res))
+
+
+//..................................................
+
+/**
+ => counting in mongoDB
+
+ syntax: 
+    db.collection.countDocuments(<query>, <options>)
+ */
+
+// example
+
+// client.db('sample_training').collection('trips')
+// .countDocuments()   //simple count to count entire collections documents
+// .then((res)=> console.log(res))
+
+
+// client.db('sample_training').collection('trips')
+// //countDocuments which are subscribers + their trip was 120 or more
+// .countDocuments({tripduration: {$gte: 120}, usertype: 'Subscriber'})
+// .then((res) => console.log(res))
+
+//another example
+
+// Find the number of sales that included a laptop that cost less than $600.
+// client.db('sample_supplies').collection('sales')
+// .countDocuments({items: {
+//     $elemMatch: {name: 'laptop', price: {$lt: 600}}
+// }})
+// .then((res) => console.log(res))
