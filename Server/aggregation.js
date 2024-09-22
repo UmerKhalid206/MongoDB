@@ -327,3 +327,127 @@ Run your aggregation pipeline, and find out which birds have been sighted way up
 
 //this database is not available in my atlas
 // db.sightings.aggregate([{$sort: {"location.coordinates.1": -1}}, {$limit: 4}])
+
+
+//....................................................................
+
+
+/* $project stage:
+    The project stage determines the output document shape, it allows us to specify
+    the existing or new fields that will be returned by the aggregation, 
+    this stage performs a projection similar to the one we apply in find() operations
+    It should usually be the last stage because it specifies the exact fields in the 
+    output.
+
+    MongoDB already works out which fields are needed and reads, only the fields that
+    are required in the pipeline, so there's usually no reason to use project earlier 
+    in the pipeline
+
+    projection can be specified as either inclusion or exclusion. In the $project
+    stage, either include the fields you would like to keep by setting the value to
+    1, or set the value to 0 if you are specifying the fields you want to exclude,
+    
+    if the projected fields are new fields, we can specify the value that we want 
+    to assign to them, you can also specify a new value to existing fields in project
+
+
+
+*/
+
+// client.db('sample_training').collection('zips')
+// .aggregate([
+//     {$project: {
+//         state: 1,   //including state from response
+//         zip:1,      //including zip from response
+//         population: "$pop", //adding a new field that would have value of pop field from response
+//         _id: 0  //excluding _id from response
+//     }},
+//     {
+//         $limit: 10
+//     }
+// ]).toArray()
+// .then((res) => console.log(res))
+
+/* output 
+{ zip: '35014', state: 'AL', population: 3062 } //and 9 more
+*/
+
+
+//............................................................
+
+/* $set stage:
+    Rather than specifying output like project, the set stage adds or modifies fields
+    in the pipeline,
+    This is useful when we want to change existing fields in pipeline or add new ones
+    to be used in upcoming pipeline stages, without having to specify all the existing
+    fields
+
+    the $set stage takes the field names and values that we want to add or change
+
+    general syntax of $set 
+
+    $set:{
+        <field>: <value>,
+        <field>: <value>,
+        ....
+        
+        <field>: <value>,
+    }
+*/
+
+/*
+Example:
+    Let's add a field to show the projected population in the next year based on 
+    average population growth in each zip code 
+
+    In the zips collection, we apply a set stage to create a new field called pop_2022
+    this will be the current population plus the US population growth rate from 2021,
+    .31%, which would be written as 1.0031 multiplied by the original population value
+    and rounded to the nearest whole number because we are referencing people
+*/
+
+
+// client.db('sample_training').collection('zips')
+// .aggregate([
+//     {$set: {
+//         pop_2022: {$round: {$multiply: [1.0031, "$pop"]}}
+//     }},
+//     {
+//         $limit: 20
+//     }
+// ]).toArray()
+// .then((res) => console.log(res))
+
+//.............................................................................
+
+/* $count 
+    Counts documents in the pipeline 
+    Returns the total document count 
+
+    The $count stage receives a string that represents the new fields that's returned 
+    with the total document count    
+*/
+
+// Example
+
+// client.db('sample_training').collection('zips')
+// .aggregate([
+//     {$count: "total_zips"} //we used total_zips as the count field name
+// ]).toArray()
+// .then((res) => console.log(res))
+
+/* Output => [ { total_zips: 29470 } ]
+
+The value is actually the total number of documents in the pipeline
+
+*/
+
+
+//another example; if i want to count the documents in which pop field's value is gte 40000 
+
+// client.db('sample_training').collection('zips')
+// .aggregate([
+//     { $match: { pop: { $gte: 50000 } } }, // Filter documents where pop >= 40000
+//     { $count: "greater50K" }                // Count the matching documents
+// ]).toArray()
+// .then((res) => console.log(res))
