@@ -73,8 +73,9 @@ Note: if sample_analytics does not exist then mongoDB would create a database na
 */
 
 // client.db('sample_analytics').collection('users').insertOne({
-//     name: 'Umer',
-//     age: 23
+//     _id: 'mdndieoi3029cnieowic',  //if you provide _id yourself then mongoDB would not create its own
+//     name: 'ABC',
+//     age: 10
 // }).then((res) => console.log('res =>', res))
 
 //...........................................................................
