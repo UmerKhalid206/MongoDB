@@ -98,6 +98,7 @@ Stages of aggregation:
 
     $sort: puts the documents in a specified order
 
+    $limit:
     $project: 
 
     $set:
@@ -272,3 +273,57 @@ count as an accumulator to find how many zip codes are in each city
 //     }
 // ]).toArray()
 // .then((res) => console.log(res))
+
+
+//.............................................................
+
+/* $sort and $limit stages can be combined together to quickly find the documents
+    with the top or bottom values in a dataset
+    
+    
+$sort: 
+    A sort stage sorts all input documents and passes them through pipeline in sorted 
+    order, this can be: 
+    - a numeric value,
+    - strings that can be arranged in alphabetical order, 
+    - dates or timestamps,
+
+    when entering the field to sort by we use 1 to indicate a sort in ascending order,
+    and we use -1 to indicate sort in descending order
+*/
+
+/* Example of $sort: suppose we want to sort documents according to highest population
+    to lowest then
+*/
+
+// client.db('sample_training').collection('zips')
+// .aggregate([
+//     {$sort: {
+//         pop: -1   //show document with highest population first
+//     }},
+//     {$limit: 3} //limit the number of documents that are passed on to next aggregation stage
+// ]).toArray()
+// .then((res) => console.log(res))
+
+//Note: In aggregation order of the stages matters a lot
+
+
+//................................................
+
+/*Another example of $sort + limit
+ You have a database called bird_data with a collection of sightings. We want to use this data to find the birds that are sighted furthest North.
+ Use the sightings collection in this lab.
+
+Create an aggregation pipeline. (Forgot the command or aggregation stages? Check the hint below!)
+
+Use a $sort stage to sort the data from North to South. To do this, use location.coordinates.1, noting the schema is { location: { coordinates: [x, y] } }, where the highest latitude value is the furthest North. The y in the schema represents latitude.
+
+Use a $limit stage to limit the number of documents so that you're shown the top 4 documents.
+
+Run your aggregation pipeline, and find out which birds have been sighted way up North!
+
+
+*/
+
+//this database is not available in my atlas
+// db.sightings.aggregate([{$sort: {"location.coordinates.1": -1}}, {$limit: 4}])
