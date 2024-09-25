@@ -97,17 +97,17 @@ Stages of aggregation:
     Each stage is a single operation on the data.
     some of the commonly used stages are 
 
-    $match: filters for data that matches certain criteria.
+    1- $match: filters for data that matches certain criteria.
 
-    $group: Groups documents based on criteria
+    2- $group: Groups documents based on criteria
 
-    $sort: puts the documents in a specified order
+    3- $sort: puts the documents in a specified order
 
-    $limit:   to limit no. of docs in output
-    $project:  to include/exclude and to add/modify fields
-    $set:      to add or modify fields
-    $count:    to count docs but you have to specify field name for it
-    $out:      to add output docs in an existing or new collection or even database
+    4- $limit:   to limit no. of docs in output
+    5- $project:  to include/exclude and to add/modify fields
+    6- $set:      to add or modify fields
+    7- $count:    to count docs but you have to specify field name for it
+    8- $out:      to add output docs in an existing or new collection or even database
     much more
 
     These operations are useful both individually and together in a pipeline for
