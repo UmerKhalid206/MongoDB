@@ -85,7 +85,12 @@ Aggregation Pipeline:
 
     aggregate function takes an array of aggregation stages to form the pipeline
 
-*/  
+*/ 
+
+/*
+// https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/
+visit the above link to know about more stages of aggregation pipeline 
+*/
 
 /*
 Stages of aggregation:
@@ -98,11 +103,11 @@ Stages of aggregation:
 
     $sort: puts the documents in a specified order
 
-    $limit:
-    $project: 
-
-    $set:
-
+    $limit:   to limit no. of docs in output
+    $project:  to include/exclude and to add/modify fields
+    $set:      to add or modify fields
+    $count:    to count docs but you have to specify field name for it
+    $out:      to add output docs in an existing or new collection or even database
     much more
 
     These operations are useful both individually and together in a pipeline for
@@ -451,3 +456,85 @@ The value is actually the total number of documents in the pipeline
 //     { $count: "greater50K" }                // Count the matching documents
 // ]).toArray()
 // .then((res) => console.log(res))
+
+//..........................................................................
+
+/*Problem
+Use the sightings collection in this lab.
+
+Create an aggregation pipeline on the sightings collection. (Forgot the command or aggregation stages? Check the hint below!)
+Create a stage that finds matches where species_common is "Eastern Bluebird" and where the date field is a value between January 1, 2022 0:00, and January 1, 2023 0:00.
+Create a stage to count how many sightings that includes.
+Run your aggregation pipeline, and see how many sightings of Eastern Bluebirds took place in 2022.
+Once you complete this lab, compare your answer to the correct answer in the Review and Solved Code section, then select Next.
+*/
+
+// Solution
+// db.birds.aggregate([
+//     {$match: {"species_common": "Eastern Bluebird", 
+//                date:{$gt: ISODate("2022-01-01T00:00:00.0z"), $lt: ISODate("2023-01-01T00:00:00.0Z")}
+//             }
+//     },
+//     {$count: "Bluebird_sightings_2022" }])
+
+
+//............................................................
+
+
+/*
+$out: 
+    It is used to create a new collection from the output of an aggregation pipeline
+
+    - The $out aggregation operator writes documents that are returned by an aggregation
+      pipeline into a new collection,
+    - So $out must be the last stage in the pipeline
+    - $out would create a new collection if it does not exist, but if collection exists
+      $out replaces the existing collection with new data
+
+      general syntax_1 of $out:
+
+      $out: {
+            db: "<db>",   //name of database
+            coll: "<newcollection>"   //name of collection
+      }
+
+      if the database or collection that you specified doesn't exist, it's created 
+
+      //another way to use $out is to provide only collection name  
+
+      syntax_2:
+
+      {$out: "<newcollection>"}  // in this case $out would use the same database you
+      used in the aggregation
+
+*/
+
+
+/*Example: we want to have states with population less than 1 million and then make a
+new collection as small_states
+*/
+
+// client.db('sample_training').collection('zips')
+// .aggregate([
+//     {$group: {
+//         _id: "$state",    //make groups according to states
+//         total_pop: {$sum: "$pop"}  //add the pop field's value of states with same name
+//     }},
+//     {$match: {   //filter out or find out 
+//         total_pop: {$lt: 1000000} /*if value of total_pop from previous stage less 
+//         than 1 million*/
+//     }},
+//     {$out: "small_state"}  /*it would create a new collection (if not exist otherwise
+//     it would overwrite the whole "small_state" collection) 
+//     "small_state" and then it would store the output documents from last stage which 
+//     is $match into collection
+//     */
+// ]).toArray()
+// .then((res) => console.log(res))
+
+//.............................................................................
+
+/*
+// https://www.mongodb.com/docs/manual/reference/operator/aggregation-pipeline/
+visit the above link to know about more stages of aggregation pipeline 
+*/
