@@ -1,3 +1,39 @@
+const {MongoClient, ObjectId} = require('mongodb')
+const uri = require('./atlas-uri')
+
+
+const client = new MongoClient(uri)
+
+
+const connectToDatabase = async() => {
+    try {
+        await client.connect()
+        console.log(`Connected to database`);
+        
+    } catch (error) {
+        console.error(error);
+        
+    }
+}
+
+const getDatabases = async() => {  
+    try {
+        await connectToDatabase()
+        // const databaseList = await client.db('sample_analytics').admin().listDatabases()
+        // databaseList.databases.forEach(db => console.log(` - ${db.name}`))
+        
+    } catch (error) {
+        console.error(error);
+        
+    } 
+    
+    
+}
+
+
+getDatabases()
+
+
 /**
  What are indexes?
 
@@ -89,3 +125,77 @@
         multikey single field indexes and multikey compound indexes.
         
 */
+
+//.......................................................................
+
+/*  Covered in this section
+->  Create a single-field index by using createIndex()
+->  How to enforce uniqueness in the field values by using the unique constraint
+    in an index
+->  How to identify the indexes that exist for collection by using getIndexes()
+->  If a query is using an index, If it is we would use explain() to determine the 
+    index it's using.
+*/
+
+/*
+->  Single Field indexes:
+        Single Field indexes are indexes on a single field, they support queries on a
+        single field and can support sorts on a single field.
+
+        We can create a single field index for a collection by using the createIndex()
+        command. We pass in the field name that we'll include in the index with the 
+        order 1 for ascending.
+    Syntax:    db.collection.createIndex({fieldname:1})
+
+    Note: It is important to specify the order when using compound indexes to perform
+          sorts on multiple fields.
+*/
+
+/*
+//Example: How to create a single field index
+We have a collection containing customer details that we query or sort based on the
+customer's birthdate, We search for customers with specific birthdate ranges and sort
+them by those dates
+
+
+*/
+
+// client.db('sample_analytics').collection('customers')
+// .find({
+//     birthdate: {$lt: new Date('1966-08-01')}
+// }).sort({birthdate: 1}).limit(10)
+// .toArray()
+// .then((res) => console.log(res))
+
+
+/*
+For this collection, we should create an index with the birthdate field, 
+We'll create an index for the customer's collection by using the createIndex() command
+
+*/
+
+// client.db('sample_analytics').collection('customers')
+// .createIndex({birthdate:1})   /*now this index can be used on birthdate queries for 
+// this collection, this was for example but usually we query collections by other fields
+// as well
+// */
+// .then((res) => console.log(res))
+
+// client.db('sample_analytics').collection('customers')
+// // .find({ birthdate: { $lte: new Date("1980-01-01") } })
+// // .limit(20)
+// // .createIndex({birthdate: -1})
+// .listIndexes()
+// // .dropIndex('birthdate_-1')
+// .toArray()
+// .then((res) => console.log(res))
+
+
+client.db('sample_analytics').collection('users')
+// .insertOne({name: ''})
+// .createIndex({name: 1})
+// .find({}).toArray()
+.find({ name: { $regex: /^[A-U]/ } }).toArray()
+// .listIndexes().toArray()
+// .dropIndex('name_1')
+.then((res) => console.log(res))
